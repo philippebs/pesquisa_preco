@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 
 headers = {"User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8 GTB7.1 (.NET CLR 3.5.30729)", "Referer": "http://example.com"}
 
-submarino = 'https://www.submarino.com.br/busca/'
-americanas = 'https://www.americanas.com.br/busca/'
+submarino = 'https://www.submarino.com.br'
+americanas = 'https://www.americanas.com.br'
 
 
 def separador(produto, imprime_nome_produto = False):
@@ -17,7 +17,7 @@ def separador(produto, imprime_nome_produto = False):
 
 def buscar_americanas(site, busca):
 	separador(site.split('.')[1].upper(), True)
-	response = requests.get(site + busca, headers=headers, timeout=10)
+	response = requests.get(site + '/busca/' + busca, headers=headers, timeout=10)
 	soup = BeautifulSoup(response.content, 'html.parser')
 
 	sections = soup.find_all('div', attrs={'class' : 'src__Wrapper-sc-1k0ejj6-2 dGIFSc'})
@@ -27,10 +27,10 @@ def buscar_americanas(site, busca):
 			tag_a = section.find('a')
 			nome = tag_a.find('span', attrs={'class': 'src__Text-sc-154pg0p-0 src__Name-sc-1k0ejj6-3 dSRUrl'})
 			preco = tag_a.find('span', attrs={'class': 'src__Text-sc-154pg0p-0 src__PromotionalPrice-sc-1k0ejj6-7 iIPzUu'})
-
+			
 			ultimo_produto = nome.string
 			separador(ultimo_produto, True)
-			print(preco.text)
+			print(preco.text.split( )[1])
 			print(site + tag_a.get('href') + '\n')
 		separador(ultimo_produto)
 	else:
@@ -40,7 +40,7 @@ def buscar_americanas(site, busca):
 def buscar_submarino(site, busca):
 	separador(site.split('.')[1].upper(), True)
 
-	response = requests.get(site + busca, headers=headers, timeout=10)
+	response = requests.get(site + '/busca/' + busca, headers=headers, timeout=10)
 
 	#soup = BeautifulSoup(response.content, 'html5lib')
 	soup = BeautifulSoup(response.content, 'html.parser')
@@ -54,7 +54,7 @@ def buscar_submarino(site, busca):
 			
 			ultimo_produto = h2.text
 			separador(ultimo_produto, True)
-			print(preco.text)
+			print(preco.text.split( )[1])
 			print(site + tag_a.get('href') + '\n')
 		separador(ultimo_produto)
 	else:
